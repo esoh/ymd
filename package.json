@@ -1,0 +1,32 @@
+{
+  "name": "@esoh/ymd",
+  "version": "1.0.0",
+  "description": "Year-Month-Day class",
+  "main": "cjs/index.js",
+  "types": "cjs/index.d.ts",
+  "license": "MIT",
+  "author": "esoh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/esoh/ymd"
+  },
+  "keywords": [
+    "typescript",
+    "utils",
+    "date",
+    "year-month-day"
+  ],
+  "peerDependencies": {
+    "typescript": "^5.0.2"
+  },
+  "files": [
+    "cjs"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "yarn build"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  }
+}
