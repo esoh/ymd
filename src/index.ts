@@ -114,11 +114,13 @@ export class Ymd {
    * uses the UTC timezone to extract the yyyy-MM-dd
    * e.g:
    *
-   * const now = new Date();
-   * console.log(now.toString()); // Fri Jul 11 2025 17:37:47 GMT-0700 (Pacific Daylight Time)
-   * console.log(now.toUTCString()); // Sat, 12 Jul 2025 00:37:47 GMT
-   * 
-   * console.log(Ymd.fromDateAtUtc(now).value); // 2025-07-11
+   * > const date = new Date(2025, 06, 12, 23);
+   * > date.toString();
+   * 'Sat Jul 12 2025 23:00:00 GMT-0700 (Pacific Daylight Time)'
+   * > date.toUTCString();
+   * 'Sun, 13 Jul 2025 06:00:00 GMT'
+   * > Ymd.fromDateAtUtc(date).value;
+   * '2025-07-13'
    */
   static fromDateAtUtc(date: Date) {
     const year = date.getUTCFullYear();
