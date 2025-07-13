@@ -17,6 +17,8 @@
     "year-month-day"
   ],
   "peerDependencies": {
+    "date-fns": "^2.0.0",
+    "date-fns-tz": "^3.2.0",
     "typescript": "^5.0.2"
   },
   "files": [
@@ -27,6 +29,8 @@
     "prepublishOnly": "yarn build"
   },
   "devDependencies": {
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "typescript": "^5.0.2"
   }
 }
