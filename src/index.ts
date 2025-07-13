@@ -168,7 +168,7 @@ export class Ymd {
    *  - yyyy  1944, 2001, 2000, 2017
    */
   format(formatStr: string) {
-    return format(this.value, formatStr);
+    return format(this.asDateAtLocal(), formatStr);
   }
 
   /**
