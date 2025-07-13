@@ -62,7 +62,9 @@ const monthRange = date.calendarMonthDateRange({ weekStartsOnWeekDayIdx: DayOfWe
 
 #### Date Creation & Conversion
 - `constructor(value: string)` - Create from YYYY-MM-DD string
-- `asDateAtLocal()` - Convert to JavaScript Date at local midnight
+- `asDateAtLocal()` - Creates a JavaScript Date representing midnight at the local time
+- `asDateAtUtc()` - Creates a JavaScript Date representing midnight at the UTC timezone
+- `asDateAtTimezone(timezone: string)` - Creates a JavaScript Date representing midnight at the specified timezone
 - `format(formatStr: string)` - Format using date-fns patterns
 
 #### Date Arithmetic

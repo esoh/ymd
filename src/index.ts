@@ -1,5 +1,5 @@
 import { addDays, addMonths, differenceInCalendarDays, differenceInDays, differenceInMonths, getDay, nextDay, previousDay } from 'date-fns';
-import { format, formatInTimeZone } from 'date-fns-tz';
+import { format, formatInTimeZone, fromZonedTime } from 'date-fns-tz';
 
 const YYYY_MM_DD_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -186,6 +186,28 @@ export class Ymd {
    */
   asDateAtLocal() {
     return new Date(this.year, this.monthZeroIndexed, this.dayOfMonth);
+  }
+
+  /**
+   * Converts it to a Date with the expected date, but at UTC time midnight,
+   * as is expected with normal Date usage.
+   *
+   * Achieves the opposite effect of `fromDateAtUtc`.
+   */
+  asDateAtUtc() {
+    return new Date(Date.UTC(this.year, this.monthZeroIndexed, this.dayOfMonth));
+  }
+
+  /**
+   * Returns a Date that represents the date at midnight in the specified timezone.
+   * > const today = Ymd.todayAtLocalTimezone();
+   * > today.asDateAtTimezone('America/New_York').toISOString();
+   * '2025-07-12T04:00:00.000Z' > this is 2025-07-12 midnight in New York
+   * > today.asDateAtTimezone('Europe/Paris').toISOString();
+   * '2025-07-11T22:00:00.000Z' > this is 2025-07-12 midnight in Paris
+   */
+  asDateAtTimezone(timezone: string) {
+    return fromZonedTime(this.asDateAtLocal(), timezone);
   }
 
   /**
