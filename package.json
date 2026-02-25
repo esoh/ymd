@@ -1,6 +1,7 @@
 {
   "name": "@esoh/ymd",
-  "version": "2.1.1",
+  "version": "2.2.0",
+  "packageManager": "yarn@1.22.22",
   "description": "Year-Month-Day class",
   "main": "cjs/index.js",
   "types": "cjs/index.d.ts",
