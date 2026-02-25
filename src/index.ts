@@ -105,9 +105,10 @@ export class Ymd {
     // date.getHours() would return `23`
     // -> we need to use nonUTC methods to get the correct date
     const year = date.getFullYear();
-    const monthZeroIndexed = padDayOrMonth(date.getMonth() + 1);
+    // getMonth() is 0-indexed
+    const month = padDayOrMonth(date.getMonth() + 1);
     const day = padDayOrMonth(date.getDate());
-    return new Ymd(`${year}-${monthZeroIndexed}-${day}`);
+    return new Ymd(`${year}-${month}-${day}`);
   }
 
   /**
@@ -121,22 +122,32 @@ export class Ymd {
    * 'Sun, 13 Jul 2025 06:00:00 GMT'
    * > Ymd.fromDateAtUtc(date).value;
    * '2025-07-13'
+   *
+   * Can be useful when working with APIs/databases that treat midnight UTC
+   * as the canonical representation of a date (e.g., Prisma with PostgreSQL DATE columns).
+   * Prisma with PostgreSQL DATE columns returns a JS Date set to midnight UTC (e.g., 2025-01-15T00:00:00.000Z).
+   * If the runtime (e.g. the server) is in PST (-8 hours), using `fromDateAtLocal` would return the previous date, which is incorrect.
    */
   static fromDateAtUtc(date: Date) {
     const year = date.getUTCFullYear();
-    const monthZeroIndexed = padDayOrMonth(date.getUTCMonth() + 1);
+    const month = padDayOrMonth(date.getUTCMonth() + 1);
     const day = padDayOrMonth(date.getUTCDate());
-    return new Ymd(`${year}-${monthZeroIndexed}-${day}`);
+    return new Ymd(`${year}-${month}-${day}`);
   }
 
-  // returns the current date in the local timezone
+  /** imagine you're in `timezone` and you time travel to the datetime `date` - what's the date you observe? */
+  static fromDateAtTimezone(date: Date, timezone: string) {
+    return new Ymd(formatInTimeZone(date, timezone, 'yyyy-MM-dd'));
+  }
+
+  /** returns the current date in the local timezone of the caller */
   static todayAtLocalTimezone() {
     return Ymd.fromDateAtLocal(new Date());
   }
 
-  /** imagine you're in a different timezone now - what's the date here? */
+  /** imagine you're in `timezone` now - what's the date you observe? */
   static todayAtTimezone(timezone: string) {
-    return new Ymd(formatInTimeZone(new Date(), timezone, 'yyyy-MM-dd'));
+    return Ymd.fromDateAtTimezone(new Date(), timezone);
   }
 
   /** imagine you're in the UTC timezone now - what's the date here? */
@@ -195,6 +206,12 @@ export class Ymd {
    * as is expected with normal Date usage.
    *
    * Achieves the opposite effect of `fromDateAtUtc`.
+   *
+   * Useful when sending dates to APIs/databases that expect midnight UTC
+   * as the canonical representation (e.g., Prisma with PostgreSQL DATE columns).
+   *
+   * @example
+   * new Ymd('2025-01-15').asDateAtUtc().toISOString(); // '2025-01-15T00:00:00.000Z'
    */
   asDateAtUtc() {
     return new Date(Date.UTC(this.year, this.monthZeroIndexed, this.dayOfMonth));
@@ -202,7 +219,7 @@ export class Ymd {
 
   /**
    * Returns a Date that represents the date at midnight in the specified timezone.
-   * > const today = Ymd.todayAtLocalTimezone();
+   * > const today = new Ymd('2025-07-12');
    * > today.asDateAtTimezone('America/New_York').toISOString();
    * '2025-07-12T04:00:00.000Z' > this is 2025-07-12 midnight in New York
    * > today.asDateAtTimezone('Europe/Paris').toISOString();
@@ -515,10 +532,12 @@ export class Ymd {
     return this.eq(Ymd.todayAtLocalTimezone().addDays(-1));
   }
 
+  /** Based on the date at the local timezone */
   isInTheFuture() {
     return this.gt(Ymd.todayAtLocalTimezone());
   }
 
+  /** Based on the date at the local timezone */
   isInThePast() {
     return this.lt(Ymd.todayAtLocalTimezone());
   }
