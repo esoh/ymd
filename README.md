@@ -20,18 +20,21 @@ import { Ymd, DayOfWeek } from '@esoh/ymd';
 
 // Create from string
 const date = new Ymd('2023-12-25');
+date.value; // '2023-12-25'
 
 // Create from Date objects
 const today = Ymd.todayAtLocalTimezone();
 const utcToday = Ymd.todayAtUtc();
 const tokyoToday = Ymd.todayAtTimezone('Asia/Tokyo');
+const dateInTokyo = Ymd.fromDateAtTimezone(someDate, 'Asia/Tokyo');
 
 // Date arithmetic
 const tomorrow = date.addDays(1);
 const nextMonth = date.addMonths(1);
 
 // Comparisons
-date.isToday(); // boolean
+date.isToday(); // boolean (uses local timezone)
+date.isToday('America/New_York'); // boolean (uses specified timezone)
 date.isInTheFuture(); // boolean
 date.gt('2023-12-24'); // boolean
 
@@ -62,6 +65,7 @@ const monthRange = date.calendarMonthDateRange({ weekStartsOnWeekDayIdx: DayOfWe
 
 #### Date Creation & Conversion
 - `constructor(value: string)` - Create from YYYY-MM-DD string
+- `value` - Returns the date as a YYYY-MM-DD string
 - `asDateAtLocal()` - Creates a JavaScript Date representing midnight at the local time
 - `asDateAtUtc()` - Creates a JavaScript Date representing midnight at the UTC timezone
 - `asDateAtTimezone(timezone: string)` - Creates a JavaScript Date representing midnight at the specified timezone
@@ -92,12 +96,13 @@ const monthRange = date.calendarMonthDateRange({ weekStartsOnWeekDayIdx: DayOfWe
 - `isEarlierThan(other)` - Alias for lt
 
 #### Boolean Checks
-- `isToday()` - Is today's date
-- `isTomorrow()` - Is tomorrow's date
-- `isYesterday()` - Is yesterday's date
-- `isInTheFuture()` - Is in the future
-- `isInThePast()` - Is in the past
-- `isFutureDate()` - Alias for isInTheFuture
+- `isToday(timezone?)` - Is today's date (optional timezone, defaults to local)
+- `isTomorrow(timezone?)` - Is tomorrow's date
+- `isYesterday(timezone?)` - Is yesterday's date
+- `isInTheFuture(timezone?)` - Is in the future
+- `isInThePast(timezone?)` - Is in the past
+- `isFutureDate(timezone?)` - Alias for isInTheFuture
+- `isPastDate(timezone?)` - Alias for isInThePast
 
 #### Date Differences
 - `daysSince(other)` - Days since other date
@@ -113,6 +118,7 @@ const monthRange = date.calendarMonthDateRange({ weekStartsOnWeekDayIdx: DayOfWe
 - `Ymd.isValid(value: string)` - Validate YYYY-MM-DD format
 - `Ymd.fromDateAtLocal(date: Date)` - Create from Date using local timezone
 - `Ymd.fromDateAtUtc(date: Date)` - Create from Date using UTC
+- `Ymd.fromDateAtTimezone(date: Date, timezone: string)` - Create from Date using specific timezone
 - `Ymd.todayAtLocalTimezone()` - Today in local timezone
 - `Ymd.todayAtTimezone(timezone: string)` - Today in specific timezone
 - `Ymd.todayAtUtc()` - Today in UTC
