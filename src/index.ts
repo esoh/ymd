@@ -155,6 +155,11 @@ export class Ymd {
     return Ymd.fromDateAtUtc(new Date());
   }
 
+  /** helper for methods that need "today" with optional timezone */
+  private static _today(timezone?: string) {
+    return timezone ? Ymd.todayAtTimezone(timezone) : Ymd.todayAtLocalTimezone();
+  }
+
   /**
    * https://date-fns.org/docs/format
    * Day of the week:
@@ -376,9 +381,11 @@ export class Ymd {
   isEarlierThan(other: Ymd | string) {
     return this.lt(normalizeYmd(other));
   }
-  isFutureDate() {
-    return this.gt(Ymd.todayAtLocalTimezone());
-  }
+  /** Alias for isInTheFuture */
+  isFutureDate = this.isInTheFuture;
+
+  /** Alias for isInThePast */
+  isPastDate = this.isInThePast;
 
   /**
    * Imagine you are viewing a month in a calendar.
@@ -520,26 +527,29 @@ export class Ymd {
     return this.currentOrPreviousDayOfWeekOccurrence(weekStartsOnWeekDayIdx);
   }
 
-  isToday() {
-    return this.eq(Ymd.todayAtLocalTimezone());
+  /** @param timezone - IANA timezone (e.g., 'America/New_York'). Defaults to local timezone. */
+  isToday(timezone?: string) {
+    return this.eq(Ymd._today(timezone));
   }
 
-  isTomorrow() {
-    return this.eq(Ymd.todayAtLocalTimezone().addDays(1));
+  /** @param timezone - IANA timezone (e.g., 'America/New_York'). Defaults to local timezone. */
+  isTomorrow(timezone?: string) {
+    return this.eq(Ymd._today(timezone).addDays(1));
   }
 
-  isYesterday() {
-    return this.eq(Ymd.todayAtLocalTimezone().addDays(-1));
+  /** @param timezone - IANA timezone (e.g., 'America/New_York'). Defaults to local timezone. */
+  isYesterday(timezone?: string) {
+    return this.eq(Ymd._today(timezone).addDays(-1));
   }
 
-  /** Based on the date at the local timezone */
-  isInTheFuture() {
-    return this.gt(Ymd.todayAtLocalTimezone());
+  /** @param timezone - IANA timezone (e.g., 'America/New_York'). Defaults to local timezone. */
+  isInTheFuture(timezone?: string) {
+    return this.gt(Ymd._today(timezone));
   }
 
-  /** Based on the date at the local timezone */
-  isInThePast() {
-    return this.lt(Ymd.todayAtLocalTimezone());
+  /** @param timezone - IANA timezone (e.g., 'America/New_York'). Defaults to local timezone. */
+  isInThePast(timezone?: string) {
+    return this.lt(Ymd._today(timezone));
   }
 
   daysSince(other: Ymd | string) {
